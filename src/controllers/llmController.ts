@@ -19,6 +19,6 @@ export const promptLLM = async (req: Request, res: Response, next: NextFunction)
         const answer = await session.prompt(question);
         res.status(200).json({ answer });
     } catch (error) {
-        next(error); // Pass the error to the next middleware
+        next(error); 
     }
 };
