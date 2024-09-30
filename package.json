@@ -25,6 +25,7 @@
     "postinstall": "npm run models:pull",
     "models:pull": "node-llama-cpp pull --dir ./models \"https://huggingface.co/mradermacher/Meta-Llama-3.1-8B-Instruct-GGUF/resolve/main/Meta-Llama-3.1-8B-Instruct.Q4_K_M.gguf\"",
     "start": "vite-node ./src/index.ts",
+    "runserver": "vite-node ./src/server.ts",
     "start:build": "node ./dist/index.ts",
     "prebuild": "rimraf ./dist ./tsconfig.tsbuildinfo",
     "build": "tsc --build tsconfig.json --force",
@@ -35,9 +36,11 @@
   },
   "dependencies": {
     "chalk": "^5.3.0",
+    "express": "^4.21.0",
     "node-llama-cpp": "^3.0.3"
   },
   "devDependencies": {
+    "@types/express": "^5.0.0",
     "@types/node": "^22.5.5",
     "@typescript-eslint/eslint-plugin": "^7.12.0",
     "@typescript-eslint/parser": "^7.12.0",
