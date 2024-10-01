@@ -1,0 +1,14 @@
+READING structure
+
+card + element = reading_element
+card + union = reading_union
+
+reading_element + reading_element = reading_mix_elements
+
+reading_mix_elements + reading_union = reading_mix_union
+
+card + advice = reading_advice
+
+reading_advice + reading_advice = reading_advice_complete
+
+4 x (reading_element) + reading_advice_complete = reading_advice_final

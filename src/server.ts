@@ -10,7 +10,7 @@ app.use(express.json());
 
 app.use('/llm-api', llmRoutes);
 
-app.use(errorHandler);  
+app.use(errorHandler);
 
 app.listen(PORT, () => {
     console.log(chalk.green(`Server is running on http://localhost:${PORT}`));
