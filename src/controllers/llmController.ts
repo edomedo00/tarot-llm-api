@@ -1,30 +1,17 @@
 import { Request, Response, NextFunction } from 'express';
 import { createSession } from '../models/llm-setup';
 import path from 'path';
-import fs, { read } from 'fs';
+import fs from 'fs';
 
 let session: any;
+let initialChatHistory: any;
 const contextsPath = path.join(__dirname, '../../resources/reading_contexts.json');
 let contexts;
 
 const initSession = async (req: Request, res: Response) => {
     session = await createSession();
+    initialChatHistory = session.getChatHistory();
     res.status(200).json({ message: "LLM session initialized." });
-};
-
-const promptLLM = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { question } = req.body;
-    if (!session) {
-        res.status(400).json({ error: "Session not initialized." });
-        return;
-    }
-
-    try {
-        const answer = await session.prompt(question);
-        res.status(200).json({ answer });
-    } catch (error) {
-        next(error); 
-    }
 };
 
 const readingElement = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -64,6 +51,15 @@ const readingElement = async (req: Request, res: Response, next: NextFunction): 
 
     try {
         const result = await session.prompt(prompt);
+        
+        // const result = await session.prompt(prompt, {
+            //     temperature: 0.8,
+            //     topK: 40,
+            //     topP: 0.02,
+            //     seed: 2462
+            // });
+            
+        session.setChatHistory(initialChatHistory);
         res.status(200).json(result);
     } catch (error) {
         next(error);
@@ -106,6 +102,7 @@ const readingUnion = async (req: Request, res: Response, next: NextFunction): Pr
 
     try {
         const result = await session.prompt(prompt);
+        session.setChatHistory(initialChatHistory);
         res.status(200).json(result);
     } catch (error) {
         next(error);
@@ -134,6 +131,7 @@ const readingMixElements = async (req: Request, res: Response, next: NextFunctio
 
     try {
         const result = await session.prompt(prompt);
+        session.setChatHistory(initialChatHistory);
         res.status(200).json(result);
     } catch (error) {
         next(error);
@@ -162,33 +160,76 @@ const readingMixUnion = async (req: Request, res: Response, next: NextFunction):
 
     try {
         const result = await session.prompt(prompt);
+        session.setChatHistory(initialChatHistory);
         res.status(200).json(result);
     } catch (error) {
         next(error);
     }
 };
+
 
 const readingAdvice = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const {card_1, card_2} = req.body;
+
+    if (!session) {
+        res.status(400).json({ error: "Session not initialized." });
+        return;
+    }
+
+    const prompt = `
+        You are given two tarot cards from which you will generate a life advice. Generate a text based on the inner significance of both cards. Act as a tarot reader, try to write a text that leaves space for personal interpretation and analysis, but be concise. Do not exceed 200 words, only return a concise text, no title nor format. Start with the text itself, no need for introduction words.
+
+        ### Card 1 Name:
+        ${card_1}
+
+        ### Card 2 Name:
+        ${card_2}
+
+        ### Advice:
+    `;
+
     try {
-        const result = await session.readingAdvice(req.body);
+        const result = await session.prompt(prompt);
+        session.setChatHistory(initialChatHistory);
         res.status(200).json(result);
     } catch (error) {
         next(error);
     }
 };
 
-const readingAdviceComplete = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-        const result = await session.readingAdviceComplete(req.body);
-        res.status(200).json(result);
-    } catch (error) {
-        next(error);
-    }
-};
 
 const readingAdviceFinal = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const {cardReading_1, cardReading_2, cardReading_3, cardReading_4, inputAdvice} = req.body;
+
+    if (!session) {
+        res.status(400).json({ error: "Session not initialized." });
+        return;
+    }
+
+    const prompt = `
+        You are given four tarot readings that come from a specific card each and an advice coming from tarot cards as well. Generate a new advice that comes from analyzing the four given readings and the advice. Try to preserve the inner meaning of each reading and the advice as much as you can, but be concise and try to focus on a situation given the cards. Remember that the input advice should try to wrap the four readings. Act as a tarot reader, try to write a text that leaves space for personal interpretation and analysis, but be concise. Do not exceed 200 words, only return a concise text, no title nor format. Start with the text itself, no need for introduction words.
+
+        ### Card reading 1:
+        ${cardReading_1}
+
+        ### Card reading 2:
+        ${cardReading_2}
+
+        ### Card reading 3:
+        ${cardReading_3}
+
+        ### Card reading 4:
+        ${cardReading_4}
+
+        ### Input advice:
+        ${inputAdvice}
+
+        ### Generated advice:
+    `;
+
     try {
-        const result = await session.readingAdviceFinal(req.body);
+        const result = await session.prompt(prompt);
+        session.setChatHistory(initialChatHistory);
         res.status(200).json(result);
     } catch (error) {
         next(error);
@@ -197,13 +238,11 @@ const readingAdviceFinal = async (req: Request, res: Response, next: NextFunctio
 
 export {
     initSession,
-    promptLLM,
     readingElement,
     readingUnion,
     readingMixElements,
     readingMixUnion,
     readingAdvice,
-    readingAdviceComplete,
     readingAdviceFinal
 };
 

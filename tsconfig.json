@@ -27,7 +27,7 @@
         "declaration": true
     },
     "files": [
-        "./src/index.ts"
+        "./src/server.ts"
     ],
     "include": [
         "./src"

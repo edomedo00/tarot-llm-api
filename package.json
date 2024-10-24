@@ -24,7 +24,7 @@
   "scripts": {
     "postinstall": "npm run models:pull",
     "models:pull": "node-llama-cpp pull --dir ./models \"https://huggingface.co/mradermacher/Meta-Llama-3.1-8B-Instruct-GGUF/resolve/main/Meta-Llama-3.1-8B-Instruct.Q4_K_M.gguf\"",
-    "start": "vite-node ./src/index.ts",
+    "start": "vite-node ./src/server.ts",
     "server": "nodemon",
     "start:build": "node ./dist/index.ts",
     "prebuild": "rimraf ./dist ./tsconfig.tsbuildinfo",

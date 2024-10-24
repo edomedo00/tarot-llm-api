@@ -45,7 +45,12 @@
     ],
     "advice": [
         {
-            "name": "spread-advice",
+            "name": "advice",
+            "title": "Advice (Spiritual guidance)",
+            "description": "The Advice cards represent the synthesis of the entire spread and offer clear spiritual guidance. These cards reflect the wisdom accumulated through the exploration of the previous elements and provide practical and spiritual recommendations for moving forward. These cards can be seen as a channel for direct communication with cosmic intelligence, offering insights and revelations essential for personal growth and evolution. In the spread, these advice cards act as a beacon, guiding the querent towards the actions and reflections necessary to align their life with their higher purpose. They are the culmination of an introspective process that seeks not only to understand but also to apply the lessons learned in a constructive and transformative way."
+        },
+        {
+            "name": "final advice",
             "title": "Advice (Spiritual guidance)",
             "description": "The Advice cards represent the synthesis of the entire spread and offer clear spiritual guidance. These cards reflect the wisdom accumulated through the exploration of the previous elements and provide practical and spiritual recommendations for moving forward. These cards can be seen as a channel for direct communication with cosmic intelligence, offering insights and revelations essential for personal growth and evolution. In the spread, these advice cards act as a beacon, guiding the querent towards the actions and reflections necessary to align their life with their higher purpose. They are the culmination of an introspective process that seeks not only to understand but also to apply the lessons learned in a constructive and transformative way."
         }
