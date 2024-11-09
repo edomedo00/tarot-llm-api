@@ -7,11 +7,12 @@ let session: any;
 let initialChatHistory: any;
 const contextsPath = path.join(__dirname, '../../resources/reading_contexts.json');
 let contexts;
+let lang = 'EN';
 
-const initSession = async (req: Request, res: Response) => {
-    session = await createSession();
+const startReading = async (req: Request, res: Response) => {
+    session = await createSession(lang);
     initialChatHistory = session.getChatHistory();
-    res.status(200).json({ message: "LLM session initialized." });
+    res.status(200).json({ message: "Reading request received." });
 };
 
 const readingElement = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -39,7 +40,6 @@ const readingElement = async (req: Request, res: Response, next: NextFunction): 
     const prompt = `
         You are given a tarot card and a specific context. Generate a reading that combines the card's meaning with the context, but do not give guidance of life, use the card's deep meaning to generate the reading instead. Act as a tarot reader, try to keep the reading abstract to leave space for personal interpretation and analysis. Do not exceed 200 words, only return a concise text, no title nor format. Start with the reading itself, no need for introduction words like "The x card in the context of..." or things like this.
 
-
         ### Card Name:
         ${card}
 
@@ -51,7 +51,6 @@ const readingElement = async (req: Request, res: Response, next: NextFunction): 
 
     try {
         const result = await session.prompt(prompt);
-        
         // const result = await session.prompt(prompt, {
             //     temperature: 0.8,
             //     topK: 40,
@@ -237,7 +236,7 @@ const readingAdviceFinal = async (req: Request, res: Response, next: NextFunctio
 };
 
 export {
-    initSession,
+    startReading,
     readingElement,
     readingUnion,
     readingMixElements,
@@ -245,20 +244,3 @@ export {
     readingAdvice,
     readingAdviceFinal
 };
-
-
-// deberia dar algo de consejo o sugerir cosas o predecir sutilmente el futuro? o solamente ofrecer informacion sobre el pasado y tu vida en el presente
-/*
-    {
-    "card": "the fool",
-    "union": "spark"   
-    }
-    "The Fool has emerged, carrying the weight of innocence and new beginnings. 
-    In the realm of the Creative Spark, this card suggests that you are on the cusp of a profound awakening, 
-    where the boundaries between reality and possibility blur. Your inner source of wisdom is stirring, 
-    guiding you towards a path of uncharted territory, where the conventional rules no longer apply. 
-    Trust in the spark within, and allow yourself to be guided by the whispers of your intuition. 
-    A radical transformation is imminent, one that will ignite your inner fire and set you ablaze with 
-    creative potential. Will you take the leap of faith, or will you remain anchored in the familiar? 
-    The choice is yours, but the universe is urging you to take the first step into the unknown."  
-*/
