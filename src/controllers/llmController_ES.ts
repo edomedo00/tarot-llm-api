@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { createSession } from '../models/llm-setup';
+import chalk from 'chalk';
 import path from 'path';
 import fs from 'fs';
 
@@ -10,9 +11,17 @@ let contexts;
 let lang = 'ES'
 
 const startReadingES = async (req: Request, res: Response) => {
-    session = await createSession(lang);
-    initialChatHistory = session.getChatHistory();
-    res.status(200).json({ message: "Spanish reading request received." });
+    if (!session) {
+        session = await createSession()
+        initialChatHistory = session.getChatHistory();
+    } else {
+        initialChatHistory = session.getChatHistory();
+    }
+
+    console.log(chalk.yellow("Reading started."));
+    console.log(chalk.blue("LANG: ", lang));
+
+    res.status(200).json({ message: "Reading request received." });
 };
 
 const readingElementES = async (req: Request, res: Response, next: NextFunction): Promise<void> => {

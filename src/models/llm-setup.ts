@@ -15,10 +15,8 @@ const model = await llama.loadModel({
 console.log(chalk.yellow("Model loaded."));
 
 
-export const createSession = async (lang: string) => {
+export const createSession = async () => {
     const context = await model.createContext();
-    console.log(chalk.yellow("Reading started."));
-    console.log(chalk.blue("LANG: ", lang));
     
     return new LlamaChatSession({
         contextSequence: context.getSequence()

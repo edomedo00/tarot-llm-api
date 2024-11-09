@@ -29,4 +29,18 @@ router.post('/reading_advice_es', readingAdviceES);
 router.post('/reading_advice_final_es', readingAdviceFinalES);
 
 
+
+// OPENDAY
+import { 
+   startReadingOpendayES,
+   reading3cardsES
+} from '../controllers/llmController_OPENDAY';
+
+
+// Ruta para el openday
+router.post('/start_openday_es', startReadingOpendayES);
+router.post('/reading_3_cards_es', reading3cardsES);
+
+
+
 export default router;
