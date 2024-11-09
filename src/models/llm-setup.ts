@@ -17,7 +17,6 @@ console.log(chalk.yellow("Model loaded."));
 
 export const createSession = async () => {
     const context = await model.createContext();
-    console.log(chalk.yellow("Context created."));
     
     return new LlamaChatSession({
         contextSequence: context.getSequence()
