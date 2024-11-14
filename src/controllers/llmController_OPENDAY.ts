@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { createSession } from '../models/llm-setup';
+import { initializeModel, createSession } from '../models/llm-setup';
 import chalk from 'chalk';
 
 let session: any;
@@ -19,8 +19,11 @@ const startReadingOpendayES = async (req: Request, res: Response) => {
     res.status(200).json({ message: "Reading request received." });
 };
 
-const reading3cardsES = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const reading3cardsES = async (req: Request, res: Response, next: NextFunction): Promise<void> => {    
     const {cards} = req.body;
+
+    console.log('Cards: ');
+    console.log(cards);
 
     if (!session) {
         res.status(400).json({ error: "Session not initialized." });
@@ -46,13 +49,26 @@ const reading3cardsES = async (req: Request, res: Response, next: NextFunction):
     `;
 
     try {
-        const result = await session.prompt(prompt);
-            
+        const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Request timed out after 120 seconds")), 120000)
+        );
+    
+        const result = await Promise.race([session.prompt(prompt), timeoutPromise]);
+    
         session.setChatHistory(initialChatHistory);
+        console.log(chalk.yellow("Reading finished."));
+    
         res.status(200).json(result);
     } catch (error) {
-        next(error);
+        if (error instanceof Error && error.message === "Request timed out after 120 seconds") {
+            console.log(chalk.red("Request timed out."));
+            initializeModel(true);
+            res.status(400).json({ error: "Request timed out" });
+        } else {
+            next(error); 
+        }
     }
+    
 };
 
 export {

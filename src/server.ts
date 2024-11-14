@@ -17,6 +17,8 @@ app.listen(PORT, () => {
 });
 
 
-// In case the port is being occupied for some reason 
+// In case the port is being occupied for some reason
+
+// Open Windows Terminal
 // Get-Process -Id (Get-NetTCPConnection -LocalPort 3000).OwningProcess
-// Stop-Process -Id [PID] -Force
+// Stop-Process -Id PID -Force
