@@ -17,7 +17,7 @@ export const initializeModel = async (reaload: boolean) => {
 
     if (reaload) {
         console.log(chalk.bgGreen("Model reloaded."));
-    // } else 
+    } else {
         console.log(chalk.bgBlue("Model loaded."));
     }
     return model;
