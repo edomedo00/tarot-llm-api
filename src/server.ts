@@ -1,7 +1,7 @@
 import express from 'express';
-import llmRoutes from './routes/llmRoutes';
+import llmRoutes from "./routes/llmRoutes.js";
 import chalk from 'chalk';
-import { errorHandler } from './middleware/errorMiddleware'; 
+import { errorHandler } from "./middleware/errorMiddleware.js"; 
 require('dotenv').config();
 
 const app = express();
