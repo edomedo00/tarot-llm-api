@@ -2,6 +2,7 @@ import express from 'express';
 import llmRoutes from './routes/llmRoutes';
 import chalk from 'chalk';
 import { errorHandler } from './middleware/errorMiddleware'; 
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;

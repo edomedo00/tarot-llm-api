@@ -31,5 +31,4 @@ export const createSession = async () => {
     });
 };
 
-
 initializeModel(false);
