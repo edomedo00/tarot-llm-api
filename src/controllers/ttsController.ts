@@ -1,5 +1,6 @@
 import * as textToSpeech from '@google-cloud/text-to-speech';
 import { Request, Response } from 'express';
+import chalk from 'chalk';
 
 const synthesizeSpeech = async (text: string): Promise<Buffer> => {
     const client = new textToSpeech.TextToSpeechClient();
@@ -40,7 +41,7 @@ const synthesizeReading = async (req: Request, res: Response): Promise<void> => 
 
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
         res.setHeader('Content-Disposition', `attachment; filename="output-${timestamp}.mp3"`);
-
+        console.log(chalk.white('Speech synthesized successfully.'));
         res.send(audioContent);
     } catch (error) {
         console.error('Error synthesizing speech:', error);
@@ -49,3 +50,6 @@ const synthesizeReading = async (req: Request, res: Response): Promise<void> => 
 };
 
 export { synthesizeReading };
+
+
+
