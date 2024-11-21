@@ -7,7 +7,7 @@ import {
     startReadingES, readingElementES, readingUnionES, readingMixElementsES, 
     readingMixUnionES, readingAdviceES, readingAdviceFinalES
  } from "../controllers/llmController_ES.js";
- import { synthesizeReading } from "../controllers/ttsController.js";
+ import { synthesizeReading, getReadingSpeech } from "../controllers/ttsController.js";
 
 const router = Router();
 
@@ -31,7 +31,7 @@ router.post('/reading_advice_final_es', readingAdviceFinalES);
 
 // Synthesize speech
 router.post('/synthesizeReading', synthesizeReading);
-
+router.get('/getReadingSpeech', getReadingSpeech);
 
 // OPENDAY
 import { 

@@ -1,8 +1,10 @@
 import * as textToSpeech from '@google-cloud/text-to-speech';
 import { Request, Response } from 'express';
 import chalk from 'chalk';
+import fs from 'fs';
+import path from 'path';
 
-const synthesizeSpeech = async (text: string): Promise<Buffer> => {
+const synthesizeSpeech = async (text: string): Promise<string> => {
     const client = new textToSpeech.TextToSpeechClient();
 
     const request: textToSpeech.protos.google.cloud.texttospeech.v1.ISynthesizeSpeechRequest = {
@@ -23,7 +25,15 @@ const synthesizeSpeech = async (text: string): Promise<Buffer> => {
         throw new Error('No audio content received.');
     }
 
-    return Buffer.from(response.audioContent);
+    const tempDir = path.join(__dirname, '..', '..', 'temp');
+    const filePath = path.join(tempDir, 'tempReading.mp3');
+
+    if (!fs.existsSync(tempDir)) {
+        fs.mkdirSync(tempDir);
+    }
+
+    fs.writeFileSync(filePath, response.audioContent, 'binary');
+    return filePath;
 };
 
 const synthesizeReading = async (req: Request, res: Response): Promise<void> => {
@@ -35,21 +45,34 @@ const synthesizeReading = async (req: Request, res: Response): Promise<void> => 
     }
 
     try {
-        const audioContent = await synthesizeSpeech(reading);
+        const filePath = await synthesizeSpeech(reading);
+        console.log(chalk.green(`Speech synthesized successfully: ${filePath}`));
 
-        res.setHeader('Content-Type', 'audio/mpeg');
-
-        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-        res.setHeader('Content-Disposition', `attachment; filename="output-${timestamp}.mp3"`);
-        console.log(chalk.white('Speech synthesized successfully.'));
-        res.send(audioContent);
+        res.status(200).json({ message: 'Successful synthesis', path: filePath });
     } catch (error) {
         console.error('Error synthesizing speech:', error);
         res.status(500).json({ error: 'Failed to synthesize speech.' });
     }
 };
 
-export { synthesizeReading };
+const getReadingSpeech = async (req: Request, res: Response): Promise<void> => {
+    const tempDir = path.join(__dirname, '..', '..', 'temp');
+    const filePath = path.join(tempDir, 'tempReading.mp3');
+    if (!fs.existsSync(filePath)) {
+        res.status(404).json({ error: 'File not found. Please synthesize the speech first.' });
+        return;
+    }
+    
+    try {
+        const fileBuffer = fs.readFileSync(filePath);
+        res.end(fileBuffer);
+    } catch (error) {
+        console.error('Error serving the MP3 file:', error);
+        res.status(500).json({ error: 'Failed to serve the audio file.' });
+    }
+};
 
-
-
+export {
+    synthesizeReading,
+    getReadingSpeech,
+};
